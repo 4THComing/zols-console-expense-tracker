@@ -13,4 +13,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Include="..\Core\Models\**\*.cs"/>
+    <Compile Include="..\Infrastructure\Data\**\*.cs"/>
+  </ItemGroup>
+
 </Project>

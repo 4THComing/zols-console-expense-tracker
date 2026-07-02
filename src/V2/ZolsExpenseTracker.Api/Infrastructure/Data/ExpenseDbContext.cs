@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using ZolsExpenseTracker.Api.Models;
 
 namespace ZolsExpenseTracker.Api.Models;
 

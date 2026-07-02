@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ZolsExpenseTracker.Api.DTOs.Expenses;
 using ZolsExpenseTracker.Api.Models;
 
-namespace ZolsExpenseTracker.Controllers;
+namespace ZolsExpenseTracker.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -51,7 +52,10 @@ public class ExpenseController : ControllerBase
             return NotFound();
         }
 
-        expense.Category = expenseDTO.category;
+        expense.Category = expenseDTO.Category;
+        expense.Description = expenseDTO.Description;
+        expense.Amount = expenseDTO.Amount;
+        expense.Date = expenseDTO.Date;
         expense.IsExpense = expenseDTO.IsExpense;
 
         try
@@ -71,15 +75,18 @@ public class ExpenseController : ControllerBase
     {
         var expense = new Expense
         {
-            IsExpense = expenseDTO.IsExpense,
-            Category = expenseDTO.category
+            Category = expenseDTO.Category,
+            Description = expenseDTO.Description,
+            Amount = expenseDTO.Amount,
+            Date = expenseDTO.Date,
+            IsExpense = expenseDTO.IsExpense
         };
 
         _context.Expenses.Add(expense);
         await _context.SaveChangesAsync();
 
         return CreatedAtAction(
-            nameof(GetAllExpenses),
+            nameof(GetExpenseById),
             new { id = expense.Id },
             ExpenseToDTO(expense));
     }
@@ -108,7 +115,10 @@ public class ExpenseController : ControllerBase
       new ExpenseDTO
       {
           Id = expense.Id,
-          category = expense.Category,
+          Category = expense.Category,
+          Description = expense.Description,
+          Amount = expense.Amount,
+          Date = expense.Date,
           IsExpense = expense.IsExpense
       };
 }

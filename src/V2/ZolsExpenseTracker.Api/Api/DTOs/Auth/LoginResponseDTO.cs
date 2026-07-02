@@ -11,6 +11,6 @@ namespace ZolsExpenseTracker.Api.DTOs.Auth
 
         public DateAndTime ExpirationDate { get; set; }
 
-        public  JWTToken { get; set; }
+       // public  JWTToken { get; set; }
     }
 }
