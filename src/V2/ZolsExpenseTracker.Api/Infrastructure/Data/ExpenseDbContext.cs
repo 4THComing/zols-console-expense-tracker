@@ -11,5 +11,8 @@ namespace ZolsExpenseTracker.Api.Models;
         }
 
         public DbSet<Expense> Expenses { get; set; }
+        public DbSet<Vendor> Vendors { get; set; }
+        public DbSet<User> Users { get; set; }
+        
     }
 

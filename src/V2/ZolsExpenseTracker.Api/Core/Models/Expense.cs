@@ -7,6 +7,7 @@ namespace ZolsExpenseTracker.Api.Models
 {
    public class Expense
    {
+      [Key]
       public Guid Id { get; set; }
 
       [Required]
@@ -18,6 +19,7 @@ namespace ZolsExpenseTracker.Api.Models
       [Range(0.01, double.MaxValue, ErrorMessage = "Amount must be greater than Zero.")]
       public double Amount { get; set; }
 
+      [Required]
       public DateTime Date { get; set; }
 
       public bool IsExpense { get; set; }

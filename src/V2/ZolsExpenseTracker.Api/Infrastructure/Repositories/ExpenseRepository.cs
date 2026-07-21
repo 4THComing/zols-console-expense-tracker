@@ -4,54 +4,56 @@ using System.Text.Json;
 using System.Collections.Generic;
 using ZolsExpenseTracker.Api.Models;
 
-namespace ZolsExpenseTracker.Api.Storage
+namespace ZolsExpenseTracker.Api.Infrastructure.Repositories
 {
-    public class ExpenseStore
+    public interface IExpenseRepository
     {
-        private readonly string filePath = "Data/expenses.json";
-        private List<Expense> expenses = new List<Expense>();
+        Task<IEnumerable<Expense>> GetAllExpensesAsync();
+        Task<IEnumerable<Expense>> GetExpenseByIdAsync(Guid id);
+        Task AddExpense(Expense expense);
+        Task UpdateExpense(Expense expense);
+        Task DeleteExpense(Expense expense);
+        Task SaveExpense();
+    }
 
-        public ExpenseStore()
-        {
-            Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
-        }
-        public void LoadExpenses()
-        {
-            if (File.Exists(filePath))
-            {
-                var json = File.ReadAllText(filePath);
-                expenses = JsonSerializer.Deserialize<List<Expense>>(json) ?? new List<Expense>();
-            }
-        }
+    public class ExpenseRepository : IExpenseRepository
+    {
+        private readonly ExpenseDbContext _context;
 
-        public void AddExpense(Expense expense)
+        public ExpenseRepository(ExpenseDbContext context)
         {
-            if (expense == null)
-            {
-                throw new ArgumentNullException(nameof(expense));
-            }
-            expenses.Add(expense);
+            _context = context;
         }
 
-        public void DeleteExpense(Expense expense)
+        public async Task<IEnumerable<Expense>> GetAllExpensesAsync()
         {
-            if (expense == null)
-            {
-                throw new ArgumentNullException(nameof(expense));
-            }
-            expenses.Remove(expense);
+            return await _context.Expenses.ToListAsync();
         }
 
-        public void SaveExpenses()
+        public async Task<Expense> GetExpenseByIdAsync(Guid id)
         {
-            var options = new JsonSerializerOptions { WriteIndented = true };
-            var json = JsonSerializer.Serialize(expenses, options);
-            File.WriteAllText(filePath, json);
+            return await _context.Expenses.FindAsync(id);
         }
 
-        public IEnumerable<Expense> GetExpenses()
+        public async Task AddExpense(Expense expense)
         {
-            return expenses;
+            await _context.Expenses.AddAsync(expense);
         }
+
+        public async Task UpdateExpense(Expense expense)
+        {
+            await _context.Expenses.Update(expense);
+        }
+
+        public async Task DeleteExpense(Expense expense)
+        {
+            await _context.Expenses.Remove(expense);
+        }
+
+        public async Task SaveExpense()
+        {
+            await _context.SaveChangesAsync();
+        }
+
     }
 }
